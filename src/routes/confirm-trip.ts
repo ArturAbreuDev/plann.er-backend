@@ -5,6 +5,8 @@ import { prisma } from "../lib/prisma";
 import { dayjs } from "../lib/dayjs";
 import { getMailClient } from "../lib/mail";
 import nodemailer from "nodemailer";
+import { ClientError } from "../errors/client-error";
+import { env } from "../env";
 
 export async function confirmTrip(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
@@ -24,7 +26,7 @@ export async function confirmTrip(app: FastifyInstance) {
           id: tripId,
         },
         include: {
-          Participant: {
+          participants: {
             where: {
               is_owner: false,
             },
@@ -37,7 +39,7 @@ export async function confirmTrip(app: FastifyInstance) {
       }
 
       if (trip.is_confirmed) {
-        return reply.redirect(`https://localhost:3000/trips/${tripId}`);
+        return reply.redirect(`${env.API_WEB_URL}/trips/${tripId}`);
       }
 
       await prisma.trip.update({
@@ -55,8 +57,8 @@ export async function confirmTrip(app: FastifyInstance) {
       const mail = await getMailClient();
 
       await Promise.all(
-        trip.Participant.map(async (participant) => {
-          const confirmationLink = `http://localhost:3333/participants/${participant.id}/confirm`;
+        trip.participants.map(async (participant) => {
+          const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
 
           const message = await mail.sendMail({
             from: {
@@ -84,7 +86,7 @@ export async function confirmTrip(app: FastifyInstance) {
         })
       );
 
-      return reply.redirect(`https://localhost:3000/trips/${tripId}`);
+      return reply.redirect(`${env.API_WEB_URL}/trips/${tripId}`);
     }
   );
 }
