@@ -27,7 +27,7 @@ export async function getLinks(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found!");
+        throw new ClientError("Trip not found!");
       }
 
       return {

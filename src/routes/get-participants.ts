@@ -34,7 +34,7 @@ export async function getParticipants(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found!");
+        throw new ClientError("Trip not found!");
       }
 
       return {
