@@ -1,9 +1,13 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
+
 import { createTrip } from "./routes/create-trip";
 import {
   validatorCompiler,
   serializerCompiler,
+  jsonSchemaTransform
 } from "fastify-type-provider-zod";
 import { confirmTrip } from "./routes/confirm-trip";
 import { confirmParticipant } from "./routes/confirm-participant";
@@ -23,6 +27,24 @@ const app = fastify();
 
 app.register(cors, {
   origin: "*"
+})
+
+app.register(fastifySwagger, {
+  swagger: {
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    
+    info: {
+      title: 'Plann.er',
+      description: 'Especificações da api e endpoints do Back end do projeto Plann.er',
+      version: '1.0.0'
+    }
+  },
+  transform: jsonSchemaTransform
+})
+
+app.register(fastifySwaggerUi, {
+  routePrefix: '/docs'
 })
 
 app.setValidatorCompiler(validatorCompiler);

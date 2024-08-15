@@ -13,6 +13,8 @@ export async function confirmTrip(app: FastifyInstance) {
     "/trips/:tripId/confirm",
     {
       schema: {
+        summary: 'confirma a criacao da trip',
+        tags: ['trip'],
         params: z.object({
           tripId: z.string().uuid(),
         }),

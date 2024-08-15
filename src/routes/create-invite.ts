@@ -13,6 +13,8 @@ export async function createInvite(app: FastifyInstance) {
     "/trips/:tripId/invites",
     {
       schema: {
+        summary: 'cria o invite para a trip',
+        tags: ['trip'],
         params: z.object({
           tripId: z.string().uuid(),
         }),

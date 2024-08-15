@@ -9,6 +9,8 @@ export async function getParticipants(app: FastifyInstance) {
     "/trips/:tripId/participants",
     {
       schema: {
+        summary: 'pega todos os participantes',
+        tags: ['participant'],
         params: z.object({
           tripId: z.string().uuid(),
         }),
